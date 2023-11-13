@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $dbserver = "localhost";
 $dbuser = "root";
 $dbpass = "";
@@ -10,15 +14,18 @@ if ($db->connect_errno) {
     exit();
 }
 
+
 if(isset($_REQUEST["orderNumber"])){
     $order = $_REQUEST["orderNumber"];
 }
+
+
 // Check if orderNumber is set in the request and sanitize it
 $orderNumber = isset($_REQUEST["orderNumber"]) ? $db->real_escape_string($_REQUEST["orderNumber"]) : '';
 
 
 
-$query_str = "SELECT * 
+$query_str = "SELECT *
 			  FROM orders INNER JOIN orderdetails ON
               orders.orderNumber = orderdetails.orderNumber
 			 ";
@@ -27,7 +34,7 @@ $res = $db->query($query_str);
 
 echo "<style>section{display:flex;} .part1, .part2{margin-left:2rem;} form{display:flex;flex-direction:column;} .checkbox{display:block;} </style>";
 echo "<h1>Query</h1>";
-echo "<form action='dbquery.php'>"; 
+echo "<form action='dbquery.php' method='POST'>"; 
 echo "<section>";
 
 echo "<div class='part1'>";
