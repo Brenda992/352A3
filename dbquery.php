@@ -19,26 +19,28 @@ if(isset($_REQUEST["orderNumber"])){
     $order = $_REQUEST["orderNumber"];
 }
 
-if(isset($_REQUEST['submit'])){
-    if(isset($_REQUEST['columns'])){
-    $columns = $_REQUEST['columns'];
-    $columns_string = implode(",", $columns);
-    }
+// if(isset($_REQUEST['submit'])){
+//     // if(isset($_REQUEST['columns'])){
+//     // $columns = $_REQUEST['columns'];
+//     // $columns_string = implode(",", $columns);
+//     // }
 
-    $query_str = "SELECT *
-			  FROM orders INNER JOIN orderdetails ON
-              orders.orderNumber = orderdetails.orderNumber
-			 ";
-}
+   
+// }
 
-
+$query_str = "SELECT *
+FROM orders INNER JOIN orderdetails ON
+orders.orderNumber = orderdetails.orderNumber
+";
 // Check if orderNumber is set in the request and sanitize it
 $orderNumber = isset($_REQUEST["orderNumber"]) ? $db->real_escape_string($_REQUEST["orderNumber"]) : '';
 
 
 
+
 $res = $db->query($query_str);
 
+$orderNumber_str="SELECT DISTINCT orders.orderNumber, orderdetails.orderNumber FROM orders JOIN orderdetails ON orders.orderNumber = orderdetails.orderNumber ORDER BY orders.orderNumber";
 
 echo "<style>section{display:flex;} .part1, .part2{margin-left:2rem;} form{display:flex;flex-direction:column;} .checkbox{display:block;} </style>";
 echo "<h1>Query</h1>";
@@ -50,12 +52,12 @@ echo "<h2>Select Order Parameters</h2>";
 
 // echo "Order Number: <input type='text' name='orderNumber' value='" .($orderNumber) . "'><br>";
 echo "Order Number: <select name=orderNumber value=''>";
-foreach ($db->query($query_str) as $row){
+foreach ($db->query($orderNumber_str) as $row){
     echo "<option value=$row[orderNumber]>$row[orderNumber]</option>";
 }
 
 
-echo "</select>";
+echo "</select><br>";
 echo "Order Date (YYYY-MM-DD): <input type='text' name='orderDateFrom' placeholder='from'> to <input type='text' name='orderDateTo' placeholder='to'><br>";
 echo "<input type='submit' name='submit' value='Submit'>";
 echo "</div>";
