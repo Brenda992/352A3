@@ -37,7 +37,6 @@ $orderNumber = isset($_REQUEST["orderNumber"]) ? $db->real_escape_string($_REQUE
 
 
 
-
 $res = $db->query($query_str);
 
 $orderNumber_str="SELECT DISTINCT orders.orderNumber, orderdetails.orderNumber FROM orders JOIN orderdetails ON orders.orderNumber = orderdetails.orderNumber ORDER BY orders.orderNumber";
@@ -55,7 +54,10 @@ echo "<h2>Select Order Parameters</h2>";
 echo "Order Number: <select name=orderNumber value=''>";
 echo "<option value=$_POST[orderNumber]></option>";
 foreach ($db->query($orderNumber_str) as $row){
-    echo "<option value=$row[orderNumber]>$row[orderNumber]</option>";
+    echo "<option value=\"".$row['orderNumber']."\""; 
+    if ($orderNumber==$row['orderNumber'])
+    echo 'selected';
+    echo ">" . $row['orderNumber']."</option>";
 }
 echo "</select><br>";
 // echo "Order Date (YYYY-MM-DD): <input type='text' name='orderDateFrom' placeholder='from'> to <input type='text' name='orderDateTo' placeholder='to'><br>";
