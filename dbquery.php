@@ -53,7 +53,7 @@ echo "<h2>Select Order Parameters</h2>";
 
 // echo "Order Number: <input type='text' name='orderNumber' value='" .($orderNumber) . "'><br>";
 echo "Order Number: <select name=orderNumber value=''>";
-echo "<option></option>";
+echo "<option value=$_POST[orderNumber]></option>";
 foreach ($db->query($orderNumber_str) as $row){
     echo "<option value=$row[orderNumber]>$row[orderNumber]</option>";
 }
@@ -90,7 +90,7 @@ echo "</form>";
 
 if (!isset($_REQUEST["submit"]))
     exit();
-$query_str1 = "SELECT * FROM orders INNER JOIN orderdetails ON orders.orderNumber = orderdetails.orderNumber WHERE orders.orderNumber =?";
+$query_str1 = "SELECT * FROM orders INNER JOIN orderdetails ON orders.orderNumber = orderdetails.orderNumber INNER JOIN products on products.productCode = orderdetails.productCode WHERE orders.orderNumber =?";
 $orderNumber = $_REQUEST['orderNumber'];
 $stmt = mysqli_prepare($db, $query_str1);
 if(!$stmt){
@@ -100,13 +100,13 @@ if(!$stmt){
   mysqli_stmt_bind_param($stmt,"i", $orderNumber);
   mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
-  echo "<table border='1' style='text-align:center;'><tbody><tr style='background-color:lightgrey;';><th>Order Number</th><th>Order Date</th><th>Shipped Date</th> <th>Quantity Ordered</th><th>Price Each</th></tr>";
+  echo "<table border='1' style='text-align:center;'><tbody><tr style='background-color:lightgrey;';><th>Order Number</th><th>Order Date</th><th>Shipped Date</th><th>Product Name</th> <th>Product Description</th><th>Quantity Ordered</th><th>Price Each</th></tr>";
   while($row = mysqli_fetch_assoc($result)) {
     echo "<tr><td>".$row["orderNumber"]."</td>";
     echo "<td>".$row["orderDate"]."</td>";
     echo "<td>".$row["shippedDate"]."</td>";
-    // echo "<tr><td>".$row["productName"]."</td></tr>";
-    // echo "<tr><td>".$row["productDescription"]."</td></tr>";
+    echo "<td>".$row["productName"]."</td>";
+    echo "<td style='width:25%;'>".$row["productDescription"]."</td>";
     echo "<td>".$row["quantityOrdered"]."</td>";
     echo "<td>".$row["priceEach"]."</td></tr>";
 
