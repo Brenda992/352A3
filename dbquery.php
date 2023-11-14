@@ -35,7 +35,6 @@ orders.orderNumber = orderdetails.orderNumber
 // Check if orderNumber is set in the request and sanitize it
 $orderNumber = isset($_REQUEST["orderNumber"]) ? $db->real_escape_string($_REQUEST["orderNumber"]) : '';
 
-$checked = '';
 
 $res = $db->query($query_str);
 
@@ -51,7 +50,7 @@ echo "<div class='part1'>";
 echo "<h2>Select Order Parameters</h2>";
 
 // echo "Order Number: <input type='text' name='orderNumber' value='" .($orderNumber) . "'><br>";
-echo "Order Number: <select name=orderNumber value=''>";
+echo "Order Number: <select name=orderNumber>";
 echo "<option selected></option>";
 foreach ($db->query($orderNumber_str) as $row) {
     echo "<option value=\"" . $row['orderNumber'] . "\"";
@@ -65,6 +64,8 @@ echo "Order Date (YYYY-MM-DD): <br>from: <select name=orderDate value=''>";
 foreach ($db->query($orderDate_str) as $row) {
     echo "<option value=$row[orderDate]>$row[orderDate]</option>";
 }
+
+$checked='';
 echo "</select>";
 echo "to: <select name=orderDate value=''>";
 foreach ($db->query($orderDate_str) as $row) {
@@ -76,7 +77,7 @@ echo "</div>";
 
 echo "<div class='part2'>";
 echo "<h2>Select Columns to Display</h2>";
-echo "<label class='checkbox'><input type='checkbox' name='columns[]' value='orderNumber' checked=$checked>";
+echo "<label class='checkbox'><input type='checkbox' name='columns[]' value='orderNumber' $checked>";
 echo "Order Number</label>";
 echo "<label class='checkbox'><input type='checkbox' name='columns[]' value='orderDate'> Order Date</label>";
 echo "<label class='checkbox'><input type='checkbox' name='columns[]' value='shippedDate'> Shipped Date</label>";
@@ -110,12 +111,13 @@ $result = mysqli_stmt_get_result($stmt);
 
 if (isset( $_REQUEST['columns'])) {
     if (!empty( $_REQUEST['columns'])) {
-        echo "<table border='1' style='text-align:center;'><tbody><tr style='background-color:lightgrey;';>";
+        echo "<table border='1' style='text-align:center;'><tbody>";
 $checkbox = $_REQUEST['columns'];
+echo "<tr style='background-color:lightgrey;'>";
 for($i=0;$i<count($checkbox);$i++){
 if ($checkbox[$i]=='orderNumber') {
-    echo'<th>Order Number</th>';
-$checked = 'checked';}
+    echo"<th>Order Number</th>";
+}
 if ($checkbox[$i]=='orderDate') {
     echo'<th>Order Date</th>';
 }
@@ -135,13 +137,15 @@ if ($checkbox[$i]=='quantityOrdered') {
 if ($checkbox[$i]=='priceEach') {
     echo'<th>Price Each</th>';
 }
-}
-while ($row = mysqli_fetch_assoc($result)) {
 
+}
+echo '</tr>';
+while ($row = mysqli_fetch_assoc($result)) {
+    echo '<tr>';
             foreach($checkbox as $selected){
-             
+                
                 if ( $selected == 'orderNumber') {
-                    echo "<tr><td>" . $row["orderNumber"] . "</td>";
+                    echo "<td>" . $row["orderNumber"] . "</td>";
                 }
                 if ($selected == 'orderDate') {
                     echo "<td>" . $row["orderDate"] . "</td>";
@@ -153,16 +157,18 @@ while ($row = mysqli_fetch_assoc($result)) {
                     echo "<td>" . $row["productName"] . "</td>";
                 }
                 if ($selected == 'productDescription') {
-                    echo "<td style='width:25%;'>" . $row["productDescription"] . "</td>";
+                    echo "<td>" . $row["productDescription"] . "</td>";
                 }
                 if ($selected == "quantityOrdered") {
                 echo "<td>" . $row["quantityOrdered"] . "</td>";
                 }
                 if ($selected == "priceEach") {
-                echo "<td>" . $row["priceEach"] . "</td></tr>";
+                echo "<td>" . $row["priceEach"] . "</td>";
                 }
-            }
+               
+            } echo '</tr>';
         }
+        
         }
     }
 
