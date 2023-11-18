@@ -152,6 +152,23 @@ else {
     if (!$stmt) {
         echo mysqli_error($db);
     }
+    // ... previous code ...
+
+// Assume $orderNumber, $orderDateStart, and $orderDateEnd are already sanitized and validated for display
+
+// Display the SQL query text
+if (isset($_REQUEST["submit"])) {
+    // Display the query based on what parameters were provided
+    if (!empty($orderNumber)) {
+        // For displaying the order number query
+        $displayQuery = "SELECT * FROM orders INNER JOIN orderdetails ON orders.orderNumber = orderdetails.orderNumber INNER JOIN products on products.productCode = orderdetails.productCode WHERE orders.orderNumber = " . $orderNumber;
+    } elseif (!empty($orderDateStart) && !empty($orderDateEnd)) {
+        // For displaying the date range query
+        $displayQuery = "SELECT * FROM orders INNER JOIN orderdetails ON orders.orderNumber = orderdetails.orderNumber INNER JOIN products on products.productCode = orderdetails.productCode WHERE orderDate BETWEEN '" . $orderDateStart . "' AND '" . $orderDateEnd . "'";
+    }
+    echo "<p>SQL Query: <pre>" . $displayQuery . "</pre></p>";
+}
+
     //bind the selected order number with the ?
     mysqli_stmt_bind_param($stmt, "i", $orderNumber);
     mysqli_stmt_execute($stmt);
